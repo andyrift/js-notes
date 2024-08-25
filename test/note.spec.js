@@ -1,4 +1,4 @@
-import { Note } from './note'
+import { Note } from '../src/note'
 
 describe('new note', () => {
 
