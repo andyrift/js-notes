@@ -1,21 +1,12 @@
 import { Note } from '../src/note'
 
-describe('new note', () => {
+describe('note name', () => {
 
-    it('has name given to it', () => {
+    it('is set in the constructor', () => {
         const note = new Note('Note')
 
         expect(note.name).toBe('Note')
     })
-
-    it('has empty body', () => {
-        const note = new Note('Note')
-
-        expect(note.body).toBe('')
-    })
-})
-
-describe('note name', () => {
 
     it('can be set and read', () => {
         const note = new Note('Note')
@@ -49,6 +40,12 @@ describe('note name', () => {
 })
 
 describe('note body', () => {
+
+    it('is empty by default', () => {
+        const note = new Note('Note')
+
+        expect(note.body).toBe('')
+    })
 
     it('can be set and read', () => {
         const note = new Note('Note')
