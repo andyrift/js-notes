@@ -4,6 +4,12 @@ export class Note {
     // milliseconds
     _timestamp
 
+    _id
+
+    get name() {
+        return this._name
+    }
+
     set name(value) {
         if (typeof value !== 'string')
             throw new Error('A note name should be a string')
@@ -12,8 +18,8 @@ export class Note {
         this._name = value
     }
 
-    get name() {
-        return this._name
+    get body() {
+        return this._body
     }
 
     set body(value) {
@@ -22,8 +28,8 @@ export class Note {
         this._body = value
     }
 
-    get body() {
-        return this._body
+    get timestamp() {
+        return this._timestamp
     }
 
     set timestamp(value) {
@@ -32,13 +38,21 @@ export class Note {
         this._timestamp = value
     }
 
-    get timestamp() {
-        return this._timestamp
+    get id() {
+        return this._id
+    }
+
+    set id(value) {
+        if (value === undefined)
+            throw new Error('id can not be undefined')
+
+        this._id = value
     }
 
     constructor(name, opts) {
         this.name = name
         this.body = opts && opts.body || ''
         this.timestamp = opts && opts.timestamp || Date.now()
+        this.id = opts && opts.id || 0
     }
 }

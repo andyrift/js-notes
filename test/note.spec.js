@@ -99,3 +99,34 @@ describe('note timestamp', () => {
         expect(note.timestamp).toEqual(1)
     })
 })
+
+describe('note id', () => {
+
+    it('is 0 by default', () => {
+        const note = new Note('Note')
+
+        expect(note.id).toBe(0)
+    })
+
+    it('can be set upon creation', () => {
+        const note = new Note('Note', { id: 1 })
+
+        expect(note.id).toBe(1)
+    })
+
+    it('can be set', () => {
+        const note = new Note('Note')
+
+        note.id = ''
+
+        expect(note.id).toBe('')
+    })
+
+    it('can not be undefined', () => {
+        const note = new Note('Note')
+
+        function setId() { note.id = undefined }
+
+        expect(setId).toThrow(/id.*undefined/)
+    })
+})
