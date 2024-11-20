@@ -60,3 +60,34 @@ body {
     padding: 4px 8px;
     margin: 0;
 }
+
+.note-editor {
+    width: 400px;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.note-editor__title {
+    border: 2px solid hsl(0, 0%, 50%);
+    outline: none;
+    padding: 4px 8px;
+}
+
+.note-editor__body {
+    padding: 4px 8px;
+    border: 2px solid hsl(0, 0%, 50%);
+    outline: none;
+    resize: none;
+    height: 200px;
+}
+
+.note-editor__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.hidden {
+    display: none;
+}

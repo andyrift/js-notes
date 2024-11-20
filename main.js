@@ -32,7 +32,7 @@ function createNoteCard(titleText = "Unnamed", bodyText = "") {
 }
 
 /**
- * @param {Element} noteContainer
+ * @param {HTMLElement} noteContainer
  * @param {Array<Object>} notes
 */
 function updateNotes(noteContainer, notes) {
@@ -52,34 +52,52 @@ function updateNotes(noteContainer, notes) {
 }
 
 function initApp() {
-    var pageContentContainer = document.getElementsByClassName('page-content').item(0)
-    if (!pageContentContainer) {
+    var pageContentContainer = /** @type {HTMLElement} */ (document.getElementsByClassName('page-content').item(0))
+    if (!pageContentContainer || !(pageContentContainer instanceof HTMLElement)) {
         throw "Page content container not found"
     }
 
-    if (pageContentContainer.childElementCount != 1) {
-        throw "Page content container does not have exactly one child"
-    }
+    var noteContainer = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
 
-    var noteContainer = pageContentContainer.firstElementChild
-    if (!noteContainer) {
-        throw "Note container not found"
-    }
+    var noteEditor = /** @type {HTMLElement} */ (pageContentContainer.lastElementChild)
+
+    var noteEditorCancel = /** @type {HTMLElement} */ (noteEditor.lastElementChild.firstElementChild)
+    var noteEditorSubmit = /** @type {HTMLElement} */ (noteEditor.lastElementChild.lastElementChild)
+
+    var noteEditorTitle = /** @type {HTMLInputElement} */ (noteEditor.firstElementChild)
+    var noteEditorBody = /** @type {HTMLTextAreaElement} */ (noteEditorTitle.nextElementSibling)
 
     var newNoteButton = document.getElementById('new-note')
     if (!newNoteButton) {
         throw "New note button not found"
     }
 
+    noteEditor.classList.add("hidden")
+
     var notes = []
 
     newNoteButton.addEventListener('click', () => {
+        noteEditor.classList.remove("hidden")
+        noteContainer.classList.add("hidden")
+        noteEditorTitle.value = ""
+        noteEditorBody.value = ""
+    })
+
+    noteEditorCancel.addEventListener('click', () => {
+        noteEditor.classList.add("hidden")
+        noteContainer.classList.remove("hidden")
+    })
+
+    noteEditorSubmit.addEventListener('click', () => {
         var newNote = {
-            title: `Title ${notes.length + 1}`,
-            body: "Body",
+            title: noteEditorTitle.value,
+            body: noteEditorBody.value,
         }
         notes.unshift(newNote)
         updateNotes(noteContainer, notes)
+
+        noteEditor.classList.add("hidden")
+        noteContainer.classList.remove("hidden")
     })
 
     /**
