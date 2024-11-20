@@ -40,7 +40,7 @@ function updateNotes(noteContainer, notes) {
     for (const [index, note] of notes.entries()) {
         var noteCard = createNoteCard(note.title, note.body)
         noteCard.addEventListener("click", () => {
-            var customEvent = new CustomEvent("updatenote", { bubbles: true, detail: { index } })
+            var customEvent = new CustomEvent("noteupdate", { bubbles: true, detail: { index } })
             noteCard.dispatchEvent(customEvent)
         })
         noteElements.push(noteCard)
@@ -92,7 +92,7 @@ function initApp() {
         updateNotes(noteContainer, notes)
     }
 
-    noteContainer.addEventListener('updatenote', handleNoteUpdate)
+    noteContainer.addEventListener('noteupdate', handleNoteUpdate)
 }
 
 initApp()
