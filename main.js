@@ -1,3 +1,5 @@
+"use strict"
+
 /**
  * @param {string} tag - the HTML tag.
  * @param {string} classes - space-delimited list of classes.
