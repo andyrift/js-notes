@@ -1,58 +1,5 @@
 "use strict"
 
-/**
- * @param {string} tag - the HTML tag.
- * @param {string} classes - space-delimited list of classes.
- * @returns {HTMLElement}
- */
-function createElement(tag, classes) {
-    const element = document.createElement(tag)
-    if (classes)
-        element.classList.add(classes)
-    return element
-}
-
-/**
- * @param {string} titleText
- * @param {string} bodyText
- * @returns {HTMLElement}
- */
-function createNoteCard(titleText = "Unnamed", bodyText = "") {
-    const note = createElement('div', 'note-card')
-    const noteContent = createElement('div', 'note-card__content')
-    const title = createElement('h3', 'note-card__title')
-    const body = createElement('p', 'note-card__body')
-
-    title.innerText = titleText
-    body.innerText = bodyText
-
-    note.appendChild(noteContent)
-    noteContent.appendChild(title)
-    noteContent.appendChild(body)
-
-    return note
-}
-
-/**
- * @param {HTMLElement} noteContainer
- * @param {Array<Object>} notes
-*/
-function updateNotes(noteContainer, notes) {
-    var noteElements = []
-    for (const [index, note] of notes.entries()) {
-        var noteCard = createNoteCard(note.title, note.body)
-        noteCard.addEventListener("click", () => {
-            var customEvent = new CustomEvent("noteupdate", { bubbles: true, detail: { index } })
-            noteCard.dispatchEvent(customEvent)
-        })
-        noteElements.push(noteCard)
-    }
-    noteContainer.replaceChildren()
-    for (let note of noteElements) {
-        noteContainer.appendChild(note)
-    }
-}
-
 function initApp() {
     var pageContentContainer = /** @type {HTMLElement} */ (document.getElementsByClassName('page-content').item(0))
     if (!pageContentContainer || !(pageContentContainer instanceof HTMLElement)) {
@@ -76,19 +23,27 @@ function initApp() {
 
     noteEditor.classList.add("hidden")
 
-    var notes = []
-
-    newNoteButton.addEventListener('click', () => {
+    function showEditor() {
         noteEditor.classList.remove("hidden")
         noteContainer.classList.add("hidden")
+    }
+
+    function hideEditor() {
+        noteEditor.classList.add("hidden")
+        noteContainer.classList.remove("hidden")
+    }
+
+    newNoteButton.addEventListener('click', () => {
         noteEditorTitle.value = ""
         noteEditorBody.value = ""
+        showEditor()
     })
 
     noteEditorCancel.addEventListener('click', () => {
-        noteEditor.classList.add("hidden")
-        noteContainer.classList.remove("hidden")
+        hideEditor()
     })
+
+    var notes = []
 
     noteEditorSubmit.addEventListener('click', () => {
         var newNote = {
@@ -116,3 +71,98 @@ function initApp() {
 }
 
 initApp()
+
+/**
+ * @param {string} tag - the HTML tag.
+ * @param {string} classes - space-delimited list of classes.
+ * @returns {HTMLElement}
+ */
+function createElement(tag, classes) {
+    const element = document.createElement(tag)
+    if (classes)
+        element.classList.add(classes)
+    return element
+}
+
+/**
+ * @param {string} text
+ * @returns {HTMLElement}
+ */
+function createNoteTitle(text) {
+    var title = createElement('h3', 'note-card__title')
+    title.innerText = text
+    return title
+}
+
+/**
+ * @param {string} text
+ * @returns {HTMLElement}
+ */
+function createNoteBody(text) {
+    var title = createElement('h3', 'note-card__title')
+    title.innerText = text
+    return title
+}
+
+/**
+ * @param {string} titleText
+ * @param {string} bodyText
+ * @returns {HTMLElement}
+ */
+function createNoteCard(titleText = "Unnamed", bodyText = "") {
+    var note = createElement('div', 'note-card')
+    var noteContent = createElement('div', 'note-card__content')
+    var title = createNoteTitle(titleText)
+    var body = createNoteBody(bodyText)
+
+    noteContent.appendChild(title)
+    noteContent.appendChild(body)
+    note.appendChild(noteContent)
+
+    return note
+}
+
+/**
+ * @param {Object[]} notes
+ * @returns {HTMLElement[]}
+*/
+function createNoteCards(notes) {
+    var noteCards = []
+    for (const note of notes) {
+        noteCards.push(createNoteCard(note.title, note.body))
+    }
+    return noteCards
+}
+
+/**
+ * @param {HTMLElement[]} noteCards
+ */
+function addClickEventsToNoteCards(noteCards) {
+    for (const [index, noteCard] of noteCards.entries()) {
+        noteCard.addEventListener("click", () => {
+            var customEvent = new CustomEvent("noteupdate", { bubbles: true, detail: { index } })
+            noteCard.dispatchEvent(customEvent)
+        })
+    }
+}
+
+/**
+ * @param {HTMLElement} noteContainer
+ * @param {HTMLElement[]} noteCards
+ */
+function replaceNoteCards(noteContainer, noteCards) {
+    noteContainer.replaceChildren(...[])
+    for (let note of noteCards) {
+        noteContainer.appendChild(note)
+    }
+}
+
+/**
+ * @param {HTMLElement} noteContainer
+ * @param {Object[]} notes
+*/
+function updateNotes(noteContainer, notes) {
+    var noteCards = createNoteCards(notes)
+    addClickEventsToNoteCards(noteCards)
+    replaceNoteCards(noteContainer, noteCards)
+}
