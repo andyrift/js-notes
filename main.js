@@ -7,68 +7,69 @@ function initApp() {
     }
 
     var noteContainer = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
-
     var editorElement = /** @type {HTMLElement} */ (pageContentContainer.lastElementChild)
 
-    var newNoteButton = document.getElementById('new-note')
-    if (!newNoteButton) {
-        throw "New note button not found"
-    }
-
-    editorElement.classList.add("hidden")
-
-    function showEditor() {
-        editorElement.classList.remove("hidden")
-        noteContainer.classList.add("hidden")
-    }
-
-    function hideEditor() {
-        editorElement.classList.add("hidden")
-        noteContainer.classList.remove("hidden")
-    }
+    var createNoteButton = document.getElementById('new-note')
 
     var editor = newEditor(editorElement)
+    var mode = newMode({ editorElement, noteContainer })
+    var notes = newNoteCollection(noteContainer)
 
-    /** @type {{title: String, body: String}[]} */
-    var notes = []
-
-    /** @type {number | undefined} */
-    var selectedNote = undefined
-
-    newNoteButton.addEventListener('click', () => {
+    createNoteButton.addEventListener('click', () => {
+        notes.clearSelected()
         editor.clear()
-        showEditor()
+        mode.edit()
     })
 
-    noteContainer.addEventListener('noteupdate',
-        /** @param {CustomEvent} e */
-        (e) => {
-            const index = parseInt(e.detail["index"])
-            selectedNote = index
-            editor.setContent(notes[selectedNote])
-            showEditor()
-        }
-    )
-
-    editor.cancelButton.addEventListener('click', () => {
-        selectedNote = undefined
-        hideEditor()
+    notes.setEditRequestHandler((event) => {
+        const index = parseInt(event.detail["index"])
+        notes.select(index)
+        editor.setContent(notes.getSelected())
+        mode.edit()
     })
 
-    editor.submitButton.addEventListener('click', () => {
+    editor.setCancelHandler(() => {
+        notes.clearSelected()
+        mode.normal()
+    })
+
+    editor.setSubmitHandler(() => {
         var note = editor.getContent()
-        if (selectedNote !== undefined) {
-            notes.splice(selectedNote, 1)
-        }
-        notes.unshift(note)
-        updateNotes(noteContainer, notes)
 
-        selectedNote = undefined
-        hideEditor()
+        notes.deleteSelected()
+        notes.add(note)
+        notes.update()
+
+        mode.normal()
     })
 }
 
 initApp()
+
+function newMode({
+    /** @type {HTMLElement} */
+    editorElement,
+    /** @type {HTMLElement} */
+    noteContainer
+}) {
+    var editing = false
+
+    editorElement.classList.add("hidden")
+
+    return {
+        editing,
+
+        edit() {
+            editorElement.classList.remove("hidden")
+            noteContainer.classList.add("hidden")
+        },
+
+        normal() {
+            editorElement.classList.add("hidden")
+            noteContainer.classList.remove("hidden")
+        }
+    }
+}
 
 /**
  * @param {HTMLElement} editorElement
@@ -89,8 +90,19 @@ function newEditor(editorElement) {
         (titleField.nextElementSibling)
 
     return {
-        cancelButton,
-        submitButton,
+        /**
+         * @param {() => void} handler
+         */
+        setCancelHandler(handler) {
+            cancelButton.addEventListener('click', handler)
+        },
+
+        /**
+         * @param {() => void} handler
+         */
+        setSubmitHandler(handler) {
+            submitButton.addEventListener('click', handler)
+        },
 
         clear() {
             titleField.value = ""
@@ -112,6 +124,69 @@ function newEditor(editorElement) {
             }
             return note
         },
+    }
+}
+
+/**
+ * @param {HTMLElement} noteContainer
+ */
+function newNoteCollection(noteContainer) {
+    var notes = []
+
+    /** @type {number | undefined} */
+    var selected = undefined
+
+    return {
+        /**
+         * @param {(e: CustomEvent) => void} handler
+         */
+        setEditRequestHandler(handler) {
+            noteContainer.addEventListener('noteupdate', handler)
+        },
+
+        /**
+         * @param {{title: string, body: string}} note
+         */
+        add(note) {
+            notes.unshift(note)
+        },
+
+        update() {
+            updateNotes(noteContainer, notes)
+        },
+
+        /**
+         * @param {number} index
+         */
+        select(index) {
+            if (index < 0 || index >= notes.length) {
+                return
+            }
+            selected = index
+        },
+
+        clearSelected() {
+            selected = undefined
+        },
+
+        isSomeSelected() {
+            return selected !== undefined
+        },
+
+        getSelected() {
+            if (this.isSomeSelected()) {
+                return notes[selected]
+            } else {
+                return undefined
+            }
+        },
+
+        deleteSelected() {
+            if (this.isSomeSelected()) {
+                notes.splice(selected, 1)
+                this.clearSelected()
+            }
+        }
     }
 }
 
