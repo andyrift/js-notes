@@ -89,53 +89,13 @@ function initApp() {
 initApp()
 
 /**
- * @param {string} tag - the HTML tag.
- * @param {string} classes - space-delimited list of classes.
- * @returns {HTMLElement}
- */
-function createElement(tag, classes) {
-    const element = document.createElement(tag)
-    if (classes)
-        element.classList.add(classes)
-    return element
-}
-
-/**
- * @param {string} text
- * @returns {HTMLElement}
- */
-function createNoteTitle(text) {
-    var title = createElement('h3', 'note-card__title')
-    title.innerText = text
-    return title
-}
-
-/**
- * @param {string} text
- * @returns {HTMLElement}
- */
-function createNoteBody(text) {
-    var body = createElement('p', 'note-card__body')
-    body.innerText = text
-    return body
-}
-
-/**
- * @param {string} titleText
- * @param {string} bodyText
- * @returns {HTMLElement}
- */
-function createNoteCard(titleText = "Unnamed", bodyText = "") {
-    var note = createElement('div', 'note-card')
-    var noteContent = createElement('div', 'note-card__content')
-    var title = createNoteTitle(titleText)
-    var body = createNoteBody(bodyText)
-
-    noteContent.appendChild(title)
-    noteContent.appendChild(body)
-    note.appendChild(noteContent)
-
-    return note
+ * @param {HTMLElement} noteContainer
+ * @param {Object[]} notes
+*/
+function updateNotes(noteContainer, notes) {
+    var noteCards = createNoteCards(notes)
+    addClickEventsToNoteCards(noteCards)
+    replaceNoteCards(noteContainer, noteCards)
 }
 
 /**
@@ -174,11 +134,51 @@ function replaceNoteCards(noteContainer, noteCards) {
 }
 
 /**
- * @param {HTMLElement} noteContainer
- * @param {Object[]} notes
-*/
-function updateNotes(noteContainer, notes) {
-    var noteCards = createNoteCards(notes)
-    addClickEventsToNoteCards(noteCards)
-    replaceNoteCards(noteContainer, noteCards)
+ * @param {string} titleText
+ * @param {string} bodyText
+ * @returns {HTMLElement}
+ */
+function createNoteCard(titleText = "Unnamed", bodyText = "") {
+    var note = createElement('div', 'note-card')
+    var noteContent = createElement('div', 'note-card__content')
+    var title = createNoteTitle(titleText)
+    var body = createNoteBody(bodyText)
+
+    noteContent.appendChild(title)
+    noteContent.appendChild(body)
+    note.appendChild(noteContent)
+
+    return note
+}
+
+/**
+ * @param {string} text
+ * @returns {HTMLElement}
+ */
+function createNoteTitle(text) {
+    var title = createElement('h3', 'note-card__title')
+    title.innerText = text
+    return title
+}
+
+/**
+ * @param {string} text
+ * @returns {HTMLElement}
+ */
+function createNoteBody(text) {
+    var body = createElement('p', 'note-card__body')
+    body.innerText = text
+    return body
+}
+
+/**
+ * @param {string} tag - the HTML tag.
+ * @param {string} classes - space-delimited list of classes.
+ * @returns {HTMLElement}
+ */
+function createElement(tag, classes) {
+    const element = document.createElement(tag)
+    if (classes)
+        element.classList.add(classes)
+    return element
 }
