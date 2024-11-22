@@ -8,41 +8,26 @@ function initApp() {
 
     var noteContainer = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
 
-    var noteEditor = /** @type {HTMLElement} */ (pageContentContainer.lastElementChild)
-
-    var noteEditorCancel = /** @type {HTMLElement} */ (noteEditor.lastElementChild.firstElementChild)
-    var noteEditorSubmit = /** @type {HTMLElement} */ (noteEditor.lastElementChild.lastElementChild)
-
-    var noteEditorTitle = /** @type {HTMLInputElement} */ (noteEditor.firstElementChild)
-    var noteEditorBody = /** @type {HTMLTextAreaElement} */ (noteEditorTitle.nextElementSibling)
+    var editorElement = /** @type {HTMLElement} */ (pageContentContainer.lastElementChild)
 
     var newNoteButton = document.getElementById('new-note')
     if (!newNoteButton) {
         throw "New note button not found"
     }
 
-    noteEditor.classList.add("hidden")
+    editorElement.classList.add("hidden")
 
     function showEditor() {
-        noteEditor.classList.remove("hidden")
+        editorElement.classList.remove("hidden")
         noteContainer.classList.add("hidden")
     }
 
     function hideEditor() {
-        noteEditor.classList.add("hidden")
+        editorElement.classList.add("hidden")
         noteContainer.classList.remove("hidden")
     }
 
-    function clearEditor() {
-        noteEditorTitle.value = ""
-        noteEditorBody.value = ""
-    }
-
-    /** @param {{title: String, body: String}} note */
-    function setEditorContent(note) {
-        noteEditorTitle.value = note.title
-        noteEditorBody.value = note.body
-    }
+    var editor = newEditor(editorElement)
 
     /** @type {{title: String, body: String}[]} */
     var notes = []
@@ -51,7 +36,7 @@ function initApp() {
     var selectedNote = undefined
 
     newNoteButton.addEventListener('click', () => {
-        clearEditor()
+        editor.clear()
         showEditor()
     })
 
@@ -60,21 +45,18 @@ function initApp() {
         (e) => {
             const index = parseInt(e.detail["index"])
             selectedNote = index
-            setEditorContent(notes[selectedNote])
+            editor.setContent(notes[selectedNote])
             showEditor()
         }
     )
 
-    noteEditorCancel.addEventListener('click', () => {
+    editor.cancelButton.addEventListener('click', () => {
         selectedNote = undefined
         hideEditor()
     })
 
-    noteEditorSubmit.addEventListener('click', () => {
-        var note = {
-            title: noteEditorTitle.value,
-            body: noteEditorBody.value,
-        }
+    editor.submitButton.addEventListener('click', () => {
+        var note = editor.getContent()
         if (selectedNote !== undefined) {
             notes.splice(selectedNote, 1)
         }
@@ -87,6 +69,51 @@ function initApp() {
 }
 
 initApp()
+
+/**
+ * @param {HTMLElement} editorElement
+ */
+function newEditor(editorElement) {
+    var cancelButton =
+        /** @type {HTMLElement} */
+        (editorElement.lastElementChild.firstElementChild)
+    var submitButton =
+        /** @type {HTMLElement} */
+        (editorElement.lastElementChild.lastElementChild)
+
+    var titleField =
+        /** @type {HTMLInputElement} */
+        (editorElement.firstElementChild)
+    var bodyField =
+        /** @type {HTMLTextAreaElement} */
+        (titleField.nextElementSibling)
+
+    return {
+        cancelButton,
+        submitButton,
+
+        clear() {
+            titleField.value = ""
+            bodyField.value = ""
+        },
+
+        /**
+         * @param {{title: String, body: String}} note
+         */
+        setContent(note) {
+            titleField.value = note.title
+            bodyField.value = note.body
+        },
+
+        getContent() {
+            var note = {
+                title: titleField.value,
+                body: bodyField.value,
+            }
+            return note
+        },
+    }
+}
 
 /**
  * @param {HTMLElement} noteContainer
