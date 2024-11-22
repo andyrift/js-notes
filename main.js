@@ -33,41 +33,57 @@ function initApp() {
         noteContainer.classList.remove("hidden")
     }
 
-    newNoteButton.addEventListener('click', () => {
+    function clearEditor() {
         noteEditorTitle.value = ""
         noteEditorBody.value = ""
+    }
+
+    /** @param {{title: String, body: String}} note */
+    function setEditorContent(note) {
+        noteEditorTitle.value = note.title
+        noteEditorBody.value = note.body
+    }
+
+    /** @type {{title: String, body: String}[]} */
+    var notes = []
+
+    /** @type {number | undefined} */
+    var selectedNote = undefined
+
+    newNoteButton.addEventListener('click', () => {
+        clearEditor()
         showEditor()
     })
 
+    noteContainer.addEventListener('noteupdate',
+        /** @param {CustomEvent} e */
+        (e) => {
+            const index = parseInt(e.detail["index"])
+            selectedNote = index
+            setEditorContent(notes[selectedNote])
+            showEditor()
+        }
+    )
+
     noteEditorCancel.addEventListener('click', () => {
+        selectedNote = undefined
         hideEditor()
     })
 
-    var notes = []
-
     noteEditorSubmit.addEventListener('click', () => {
-        var newNote = {
+        var note = {
             title: noteEditorTitle.value,
             body: noteEditorBody.value,
         }
-        notes.unshift(newNote)
-        updateNotes(noteContainer, notes)
-
-        noteEditor.classList.add("hidden")
-        noteContainer.classList.remove("hidden")
-    })
-
-    /**
-     * @param {CustomEvent} e
-    */
-    function handleNoteUpdate(e) {
-        const index = parseInt(e.detail["index"])
-        var note = notes.splice(index, 1)[0]
+        if (selectedNote !== undefined) {
+            notes.splice(selectedNote, 1)
+        }
         notes.unshift(note)
         updateNotes(noteContainer, notes)
-    }
 
-    noteContainer.addEventListener('noteupdate', handleNoteUpdate)
+        selectedNote = undefined
+        hideEditor()
+    })
 }
 
 initApp()
@@ -99,9 +115,9 @@ function createNoteTitle(text) {
  * @returns {HTMLElement}
  */
 function createNoteBody(text) {
-    var title = createElement('h3', 'note-card__title')
-    title.innerText = text
-    return title
+    var body = createElement('p', 'note-card__body')
+    body.innerText = text
+    return body
 }
 
 /**
