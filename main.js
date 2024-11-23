@@ -1,5 +1,7 @@
 "use strict"
 
+initApp()
+
 function initApp() {
     var { editorElement, noteContainer, createNoteButton } = findPageElements()
 
@@ -8,14 +10,17 @@ function initApp() {
     var mode = Mode({ editor, notes })
 
     createNoteButton.addEventListener('click', () => {
-        notes.clearSelected()
-        editor.clear()
+        if (mode.isEditing()) {
+            return
+        }
+        notes.unselect()
+        editor.create()
         mode.edit()
     })
 
     notes.setEditHandler((index) => {
         notes.select(index)
-        editor.setContent(notes.getSelected())
+        editor.edit(notes.getSelected())
         mode.edit()
     })
 
@@ -26,7 +31,7 @@ function initApp() {
     })
 
     editor.setCancelHandler(() => {
-        notes.clearSelected()
+        notes.unselect()
         mode.normal()
     })
 
@@ -37,8 +42,6 @@ function initApp() {
         mode.normal()
     })
 }
-
-initApp()
 
 function findPageElements() {
     var pageContentContainer =
@@ -67,14 +70,18 @@ function Mode({ editor, notes }) {
     notes.show()
 
     return {
-        editing,
+        isEditing() {
+            return editing
+        },
 
         edit() {
+            editing = true
             editor.show()
             notes.hide()
         },
 
         normal() {
+            editing = false
             editor.hide()
             notes.show()
         }
@@ -85,6 +92,7 @@ function Mode({ editor, notes }) {
  * @param {HTMLElement} editorElement
  */
 function Editor(editorElement) {
+    var creating = false
     var editorActions = editorElement.lastElementChild
     var deleteButton =
         /** @type {HTMLElement} */
@@ -152,6 +160,27 @@ function Editor(editorElement) {
         show() {
             editorElement.classList.remove("hidden")
         },
+
+        hideDeleteButton() {
+            deleteButton.classList.add("hidden")
+        },
+
+        showDeleteButton() {
+            deleteButton.classList.remove("hidden")
+        },
+
+        /**
+         * @param {{title: String, body: String}} note
+         */
+        edit(note) {
+            this.setContent(note)
+            this.showDeleteButton()
+        },
+
+        create() {
+            this.clear()
+            this.hideDeleteButton()
+        },
     }
 }
 
@@ -199,7 +228,7 @@ function Notes(noteContainer) {
             selected = index
         },
 
-        clearSelected() {
+        unselect() {
             selected = undefined
         },
 
@@ -218,7 +247,7 @@ function Notes(noteContainer) {
         deleteSelected() {
             if (this.isSomeSelected()) {
                 notes.splice(selected, 1)
-                this.clearSelected()
+                this.unselect()
             }
         },
 
@@ -239,7 +268,7 @@ function Notes(noteContainer) {
 function updateNotes(noteContainer, notes) {
     var noteCards = createNoteCards(notes)
     addClickEventsToNoteCards(noteCards)
-    replaceNoteCards(noteContainer, noteCards)
+    replaceNoteCardsInContainer(noteContainer, noteCards)
 }
 
 /**
@@ -270,11 +299,8 @@ function addClickEventsToNoteCards(noteCards) {
  * @param {HTMLElement} noteContainer
  * @param {HTMLElement[]} noteCards
  */
-function replaceNoteCards(noteContainer, noteCards) {
-    noteContainer.replaceChildren(...[])
-    for (let note of noteCards) {
-        noteContainer.appendChild(note)
-    }
+function replaceNoteCardsInContainer(noteContainer, noteCards) {
+    noteContainer.replaceChildren(...noteCards)
 }
 
 /**
@@ -318,7 +344,7 @@ function createNoteBody(text) {
 /**
  * @param {string} tag - the HTML tag.
  * @param {string} classes - space-delimited list of classes.
- * @returns {HTMLElement}
+ * @returns {HTMLElement} the resulting element
  */
 function createElement(tag, classes) {
     const element = document.createElement(tag)
