@@ -367,7 +367,11 @@ function createNoteCard(titleText = "Unnamed", bodyText = "") {
  */
 function createNoteTitle(text) {
     var title = createElement('h3', 'note-card__title')
-    title.innerText = text
+    if (text) {
+        title.innerText = text
+    } else {
+        title.innerText = "Untitled"
+    }
     return title
 }
 
