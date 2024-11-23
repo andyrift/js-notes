@@ -9,38 +9,62 @@ function initApp() {
     var notes = Notes(noteContainer)
     var mode = Mode({ editor, notes })
 
-    createNoteButton.addEventListener('click', () => {
-        if (mode.isEditing()) {
-            return
-        }
+    setupActions()
+
+    function setupActions() {
+        setupCreateNoteAction()
+        setupNoteActions()
+        setupEditorActions()
+    }
+
+    function setupCreateNoteAction() {
+        createNoteButton.addEventListener('click', beginCreateNote)
+    }
+
+    function setupNoteActions() {
+        notes.setEditHandler(editNote)
+    }
+
+    function setupEditorActions() {
+        editor.setDeleteHandler(deleteCurrentNote)
+        editor.setCancelHandler(cancelEditing)
+        editor.setSubmitHandler(submitNote)
+    }
+
+    function beginCreateNote() {
+        if (mode.isEditing()) return
         notes.unselect()
         editor.create()
         mode.edit()
-    })
+    }
 
-    notes.setEditHandler((index) => {
+    /**
+     * @param {number} index
+     */
+    function editNote(index) {
+        if (mode.isEditing()) return
         notes.select(index)
         editor.edit(notes.getSelected())
         mode.edit()
-    })
+    }
 
-    editor.setDeleteHandler(() => {
+    function deleteCurrentNote() {
         notes.deleteSelected()
         notes.update()
         mode.normal()
-    })
+    }
 
-    editor.setCancelHandler(() => {
+    function cancelEditing() {
         notes.unselect()
         mode.normal()
-    })
+    }
 
-    editor.setSubmitHandler(() => {
+    function submitNote() {
         notes.deleteSelected()
         notes.add(editor.getContent())
         notes.update()
         mode.normal()
-    })
+    }
 }
 
 function findPageElements() {
@@ -92,7 +116,6 @@ function Mode({ editor, notes }) {
  * @param {HTMLElement} editorElement
  */
 function Editor(editorElement) {
-    var creating = false
     var editorActions = editorElement.lastElementChild
     var deleteButton =
         /** @type {HTMLElement} */
