@@ -4,61 +4,79 @@ body {
 }
 
 .top-bar {
-    padding: 10px 20px;
+    background: hsl(100, 50%, 80%);
+    box-shadow: 0 2px 4px hsl(0, 0%, 0%, 30%);
+    margin: 0;
+    padding: 8px 16px;
     display: flex;
-    gap: 20px;
     align-items: center;
-    box-shadow: 0 2px 4px hsl(0, 0%, 10%, 40%);
+    justify-content: space-between;
+    gap: 16px;
 }
 
 .top-bar__title {
+    color: hsl(100, 30%, 15%);
     margin: 0;
     padding: 0;
 }
 
 .button {
-    border: none;
+    background: transparent;
+    font-weight: 700;
+    border: solid 2px hsl(100, 40%, 40%);
+    color: hsl(100, 40%, 40%);
+    font-weight: 700;
+    margin: 0;
     padding: 8px 16px;
-    background: hsl(0, 0%, 70%);
     outline: none;
     cursor: pointer;
 }
 
 .button:hover {
-    background: hsl(0, 0%, 80%);
+    background: hsl(100, 30%, 90%);
 }
 
 .page-content {
     margin: auto;
-    padding: 20px;
-    width: 1000px;
+    padding: 16px;
+    width: 1024px;
 }
 
 .note-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     flex-wrap: wrap;
     gap: 16px;
 }
 
 .note-card {
-    height: 100px;
-    box-shadow: 0 2px 4px hsl(0, 0%, 10%, 40%);
+    height: 150px;
 }
 
 .note-card__content {
     padding: 0;
     margin: 0;
+    height: 100%;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
 }
 
 .note-card__title {
-    padding: 4px 8px;
+    background: hsl(100, 50%, 80%);
+    border-top: solid 2px hsl(100, 70%, 90%);
+    box-shadow: 0 2px 4px hsl(0, 0%, 0%, 30%);
+    color: hsl(100, 30%, 15%);
     margin: 0;
+    padding: 8px 16px;
 }
 
 .note-card__body {
-    padding: 4px 8px;
+    box-shadow: 0 1px 3px hsl(0, 0%, 0%, 30%);
+    color: hsl(100, 10%, 15%);
+    flex-grow: 1;
     margin: 0;
+    padding: 8px 16px;
 }
 
 .note-editor {
@@ -70,14 +88,16 @@ body {
 }
 
 .note-editor__title {
-    border: 2px solid hsl(0, 0%, 50%);
+    border: solid 2px hsl(100, 40%, 40%);
     outline: none;
     padding: 4px 8px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .note-editor__body {
     padding: 4px 8px;
-    border: 2px solid hsl(0, 0%, 50%);
+    border: solid 2px hsl(100, 40%, 40%);
     outline: none;
     resize: none;
     height: 200px;
