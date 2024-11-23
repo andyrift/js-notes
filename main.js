@@ -10,6 +10,23 @@ function initApp() {
     var mode = Mode({ editor, notes })
 
     setupActions()
+    addPlaceholderNotes()
+
+    function addPlaceholderNotes() {
+        notes.add({
+            title: "Note 1",
+            body: "Note 1 body",
+        })
+        notes.add({
+            title: "Note 2",
+            body: "Note 2 body",
+        })
+        notes.add({
+            title: "Note 3",
+            body: "Note 3 body",
+        })
+        notes.update()
+    }
 
     function setupActions() {
         setupCreateNoteAction()
