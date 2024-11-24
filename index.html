@@ -11,16 +11,23 @@
 
 <body>
     <header class="top-bar">
-        <h1 class="top-bar__title">Notes</h1>
-        <button id="new-note" class="button">New</button>
+        <div class="top-bar__title-container">
+            <h1 class="top-bar__title">Notes</h1>
+            <div class="top-bar__title-triangle"></div>
+        </div>
+        <div class="top-bar__container">
+            <button id="new-note" class="button">New</button>
+        </div>
     </header>
     <div class="page-content">
         <div class="note-container">
             <!-- Note Card Example
             <div class="note-card">
                 <div class="note-card__content">
-                    <div class="note-card__title">Title</div>
-                    <div class="note-card__body">Body</div>
+                    <h1 class="note-card__title">Title</h1>
+                    <div class="note-card__body">
+                        <p class="note-card__text-body">Body</p>
+                    </div>
                 </div>
             </div>
             -->

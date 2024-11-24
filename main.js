@@ -13,18 +13,12 @@ function initApp() {
     addPlaceholderNotes()
 
     function addPlaceholderNotes() {
-        notes.add({
-            title: "Note 1",
-            body: "Note 1 body",
-        })
-        notes.add({
-            title: "Note 2",
-            body: "Note 2 body",
-        })
-        notes.add({
-            title: "Note 3",
-            body: "Note 3 body",
-        })
+        for (let i = 1; i <= 5; i += 1) {
+            notes.add({
+                title: `Note ${i}`,
+                body: `Note ${i} body`,
+            })
+        }
         notes.update()
     }
 
@@ -366,7 +360,7 @@ function createNoteCard(titleText = "Unnamed", bodyText = "") {
  * @returns {HTMLElement}
  */
 function createNoteTitle(text) {
-    var title = createElement('h3', 'note-card__title')
+    var title = createElement('h1', 'note-card__title')
     if (text) {
         title.innerText = text
     } else {
@@ -380,8 +374,10 @@ function createNoteTitle(text) {
  * @returns {HTMLElement}
  */
 function createNoteBody(text) {
-    var body = createElement('p', 'note-card__body')
-    body.innerText = text
+    var body = createElement('div', 'note-card__body')
+    var textBody = createElement('p', 'note-card__text-body')
+    textBody.innerText = text
+    body.appendChild(textBody)
     return body
 }
 
