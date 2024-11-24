@@ -128,15 +128,15 @@ function Mode({ editor, notes }) {
  */
 function Editor(editorElement) {
     var editorActions = editorElement.lastElementChild
-    var deleteButton =
+    var submitButton =
         /** @type {HTMLElement} */
         (editorActions.firstElementChild)
+    var deleteButton =
+        /** @type {HTMLElement} */
+        (submitButton.nextElementSibling)
     var cancelButton =
         /** @type {HTMLElement} */
         (deleteButton.nextElementSibling)
-    var submitButton =
-        /** @type {HTMLElement} */
-        (cancelButton.nextElementSibling)
 
     var titleField =
         /** @type {HTMLInputElement} */
