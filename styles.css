@@ -1,7 +1,8 @@
 :root {
     --main-color: hsl(165, 80%, 80%);
-    --main-color-brighter: hsl(165, 90%, 90%);
     --main-color-darker: hsl(165, 40%, 40%);
+    --main-color-brighter: hsl(165, 90%, 90%);
+    --main-color-brightest: hsl(165, 40%, 95%);
 
     --title-text-color: hsl(165, 40%, 20%);
     --text-color: hsl(165, 10%, 15%);
@@ -58,7 +59,7 @@ body {
 }
 
 .button {
-    background: transparent;
+    background: white;
     font-weight: 700;
     border: var(--border);
     color: var(--main-color-darker);
@@ -70,6 +71,10 @@ body {
 }
 
 .button:hover {
+    background: var(--main-color-brightest);
+}
+
+.button:active {
     background: var(--main-color-brighter);
 }
 
