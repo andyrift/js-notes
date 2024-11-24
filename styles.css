@@ -15,6 +15,7 @@
 body {
     margin: 0;
     padding: 0;
+    background: hsl(165, 10%, 93%);
 }
 
 .top-bar {
@@ -146,6 +147,7 @@ body {
 }
 
 .note-card__body {
+    background: white;
     box-shadow: var(--shadow-s);
     color: var(--text-color);
     margin: 0;
