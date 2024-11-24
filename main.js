@@ -43,7 +43,9 @@ function initApp() {
     }
 
     function beginCreateNote() {
-        if (mode.isEditing()) return
+        if (mode.isEditing()) {
+            cancelEditing()
+        }
         notes.unselect()
         editor.create()
         mode.edit()
