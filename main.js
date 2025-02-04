@@ -1,8 +1,8 @@
 "use strict"
 
-initApp()
+startApp()
 
-function initApp() {
+function startApp() {
     var { editorElement, noteContainer, createNoteButton } = findPageElements()
 
     var editor = Editor(editorElement)
@@ -101,25 +101,33 @@ function findPageElements() {
 }
 
 function Mode({ editor, notes }) {
-    var editing = false
+    var mode = undefined
+    var modes = {
+        editing: 'editing',
+        normal: 'normal',
+    }
 
     editor.hide()
     notes.show()
+    mode = modes.normal
+    var hideCurrent = () => notes.hide()
 
     return {
         isEditing() {
-            return editing
+            return mode == modes.editing
         },
 
         edit() {
-            editing = true
+            mode = modes.editing
+            hideCurrent()
+            hideCurrent = () => editor.hide()
             editor.show()
-            notes.hide()
         },
 
         normal() {
-            editing = false
-            editor.hide()
+            mode = modes.normal
+            hideCurrent()
+            hideCurrent = () => notes.hide()
             notes.show()
         }
     }
