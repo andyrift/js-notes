@@ -11,13 +11,13 @@
 
 <body>
     <header class="top-bar">
-        <div id="title" class="top-bar__title-container">
+        <div class="top-bar__title-container">
             <h1 class="top-bar__title">Notes</h1>
             <div class="top-bar__title-triangle"></div>
         </div>
         <div class="top-bar__container">
-            <button id="new-note" class="button button_border">New</button>
-            <button id="account" class="button button_border">Account</button>
+            <button class="button button_border button_new-note">New</button>
+            <button class="button button_border button_account">Account</button>
         </div>
     </header>
     <div class="page-content">
@@ -25,30 +25,36 @@
             <h1>
                 Sign up
             </h1>
-            <input type="text" placeholder="login" class="form__input">
+            <input type="text" placeholder="username" class="form__input">
             <input type="password" placeholder="password" class="form__input">
             <input type="password" placeholder="repeat password" class="form__input">
             <input type="password" placeholder="master password" class="form__input">
             <div class="signup__actions">
-                <button class="button button_full">Submit</button>
-                <button class="button button_border">Log in</button>
+                <button class="button button_full button_submit">Submit</button>
+                <button class="button button_border button_login">Log in</button>
             </div>
         </div>
         <div class="login hidden">
             <h1>
                 Log in
             </h1>
-            <input type="text" placeholder="login" class="form__input">
+            <input type="text" placeholder="username" class="form__input">
             <input type="password" placeholder="password" class="form__input">
             <div class="login__actions">
-                <button class="button button_full">Submit</button>
-                <button class="button button_border">Sign Up</button>
+                <button class="button button_full button_submit">Submit</button>
+                <button class="button button_border button_signup">Sign Up</button>
             </div>
         </div>
         <div class="account hidden">
             <h1>
                 Account
             </h1>
+            <div>uuid: </div>
+            <div>username: </div>
+            <div>registered: </div>
+            <div class="actions">
+                <button class="button button_full">Change password</button>
+            </div>
         </div>
         <div class="note-container hidden">
             <!-- Note Card Example
@@ -66,9 +72,9 @@
             <input type="text" placeholder="Untitled" class="note-editor__title">
             <textarea name="body" class="note-editor__body"></textarea>
             <div class="note-editor__actions">
-                <button class="button button_full">Submit</button>
-                <button class="button button_text button_margin_left">Delete</button>
-                <button class="button button_border">Cancel</button>
+                <button class="button button_full button_submit">Submit</button>
+                <button class="button button_text button_margin_left button_delete">Delete</button>
+                <button class="button button_border button_cancel">Cancel</button>
             </div>
         </div>
     </div>

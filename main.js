@@ -144,22 +144,18 @@ function startApp() {
 }
 
 function findPageElements() {
-    var pageContentContainer =
-        /** @type {HTMLElement} */
-        (document.getElementsByClassName('page-content').item(0))
-    if (!pageContentContainer || !(pageContentContainer instanceof HTMLElement)) {
-        throw "Page content container not found"
-    }
+    var pageContentContainer = findHTMLElementByClassName(document, 'page-content')
+    var topBar = findHTMLElementByClassName(document, 'top-bar')
 
-    var signupElement = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
-    var loginElement = /** @type {HTMLElement} */ (signupElement.nextElementSibling)
-    var accountElement = /** @type {HTMLElement} */ (loginElement.nextElementSibling)
-    var noteContainer = /** @type {HTMLElement} */ (accountElement.nextElementSibling)
-    var editorElement = /** @type {HTMLElement} */ (noteContainer.nextElementSibling)
+    var signupElement = findHTMLElementByClassName(pageContentContainer, 'signup')
+    var loginElement = findHTMLElementByClassName(pageContentContainer, 'login')
+    var accountElement = findHTMLElementByClassName(pageContentContainer, 'account')
+    var noteContainer = findHTMLElementByClassName(pageContentContainer, 'note-container')
+    var editorElement = findHTMLElementByClassName(pageContentContainer, 'note-editor')
 
-    var homeButton = document.getElementById('title')
-    var createNoteButton = document.getElementById('new-note')
-    var accountButton = document.getElementById('account')
+    var homeButton = findHTMLElementByClassName(topBar, 'top-bar__title')
+    var createNoteButton = findHTMLElementByClassName(topBar, 'button_new-note')
+    var accountButton = findHTMLElementByClassName(topBar, 'button_account')
 
     return {
         signupElement,
@@ -236,13 +232,8 @@ function Placeholder(element) {
  * @param {HTMLElement} element
  */
 function Signup(element) {
-    var actions = element.lastElementChild
-    var submitButton =
-        /** @type {HTMLElement} */
-        (actions.firstElementChild)
-    var loginButton =
-        /** @type {HTMLElement} */
-        (submitButton.nextElementSibling)
+    var submitButton = findHTMLElementByClassName(element, 'button_submit')
+    var loginButton = findHTMLElementByClassName(element, 'button_login')
 
     var loginInput =
         /** @type {HTMLInputElement} */
@@ -295,13 +286,8 @@ function Signup(element) {
  * @param {HTMLElement} element
  */
 function Login(element) {
-    var actions = element.lastElementChild
-    var submitButton =
-        /** @type {HTMLElement} */
-        (actions.firstElementChild)
-    var signupButton =
-        /** @type {HTMLElement} */
-        (submitButton.nextElementSibling)
+    var submitButton = findHTMLElementByClassName(element, 'button_submit')
+    var signupButton = findHTMLElementByClassName(element, 'button_signup')
 
     return {
         /**
@@ -344,26 +330,28 @@ function Account(element) {
 }
 
 /**
- * @param {HTMLElement} editorElement
+ * @param {HTMLElement} element
  */
-function Editor(editorElement) {
-    var editorActions = editorElement.lastElementChild
-    var submitButton =
-        /** @type {HTMLElement} */
-        (editorActions.firstElementChild)
-    var deleteButton =
-        /** @type {HTMLElement} */
-        (submitButton.nextElementSibling)
-    var cancelButton =
-        /** @type {HTMLElement} */
-        (deleteButton.nextElementSibling)
+function Editor(element) {
+    var submitButton = findHTMLElementByClassName(element, 'button_submit')
+    var deleteButton = findHTMLElementByClassName(element, 'button_delete')
+    var cancelButton = findHTMLElementByClassName(element, 'button_cancel')
 
-    var titleField =
-        /** @type {HTMLInputElement} */
-        (editorElement.firstElementChild)
-    var bodyField =
-        /** @type {HTMLTextAreaElement} */
-        (titleField.nextElementSibling)
+    var titleFieldElement = findHTMLElementByClassName(element, 'note-editor__title')
+    var bodyFieldElement = findHTMLElementByClassName(element, 'note-editor__body')
+
+    if (!(titleFieldElement instanceof HTMLInputElement)) {
+        throw "Editor title field element is not an element of correct type"
+    }
+
+    if (!(bodyFieldElement instanceof HTMLTextAreaElement)) {
+        throw "Editor body field element is not an element of correct type"
+    }
+
+    /** @type{HTMLInputElement} */
+    var titleField = titleFieldElement
+    /** @type{HTMLTextAreaElement} */
+    var bodyField = bodyFieldElement
 
     return {
         /**
@@ -408,11 +396,11 @@ function Editor(editorElement) {
         },
 
         hide() {
-            editorElement.classList.add("hidden")
+            element.classList.add("hidden")
         },
 
         show() {
-            editorElement.classList.remove("hidden")
+            element.classList.remove("hidden")
         },
 
         hideDeleteButton() {
@@ -611,4 +599,18 @@ function createElement(tag, classes) {
     if (classes)
         element.classList.add(classes)
     return element
+}
+
+/**
+ * @param {HTMLElement | document} element
+ * @param {string} className
+ */
+function findHTMLElementByClassName(element, className) {
+    var child =
+        /** @type {HTMLElement} */
+        (element.getElementsByClassName(className).item(0))
+    if (!child || !(child instanceof HTMLElement)) {
+        throw `HTML element with class name ${className} not found`
+    }
+    return child
 }
