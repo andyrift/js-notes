@@ -63,25 +63,67 @@ body {
 }
 
 .button {
-    background: white;
     font-weight: 700;
-    border: var(--border);
-    color: var(--main-color-darker);
-    font-weight: 700;
-    margin: 0;
     padding: 8px 16px;
     outline: none;
     cursor: pointer;
+    margin: 0;
+}
+
+.button_border {
+    background: white;
+    border: var(--border);
+    color: var(--main-color-darker);
 }
 
 @media (hover: hover) {
-    .button:hover {
+    .button_border:hover {
         background: var(--main-color-brightest);
     }
 }
 
-.button:active {
+.button_border:active {
     background: var(--main-color-brighter);
+}
+
+.button_full {
+    background: var(--main-color-darker);
+    border: none;
+    color: white;
+}
+
+@media (hover: hover) {
+    .button_full:hover {
+        background: var(--main-color-dark);
+    }
+}
+
+.button_full:active {
+    background: var(--main-color);
+}
+
+.button_text {
+    background: transparent;
+    border: none;
+    color: var(--main-color-darker);
+}
+
+@media (hover: hover) {
+    .button-text:hover {
+        color: var(--main-color-dark);
+    }
+}
+
+.button-text:active {
+    color: var(--main-color);
+}
+
+.button_margin_left {
+    margin-left: auto;
+}
+
+.button_margin_right {
+    margin-right: auto;
 }
 
 .page-content {
@@ -97,7 +139,6 @@ body {
         width: auto;
 	}
 }
-
 
 .note-container {
     display: grid;
@@ -214,72 +255,6 @@ body {
     gap: 8px;
     justify-content: flex-end;
 }
-
-.note-editor__submit {
-    background: var(--main-color-darker);
-    font-weight: 700;
-    border: none;
-    color: white;
-    font-weight: 700;
-    margin: 0;
-    padding: 8px 16px;
-    outline: none;
-    cursor: pointer;
-}
-
-@media (hover: hover) {
-    .note-editor__submit:hover {
-        background: var(--main-color-dark);
-    }
-}
-
-.note-editor__submit:active {
-    background: var(--main-color);
-}
-
-.note-editor__cancel:active {
-    background: var(--main-color-brighter);
-}
-
-.note-editor__delete {
-    background: transparent;
-    border: none;
-    color: var(--main-color-darker);
-    font-weight: 700;
-    margin: 8px 16px;
-    outline: none;
-    cursor: pointer;
-    margin-left: auto;
-}
-
-@media (hover: hover) {
-    .note-editor__delete:hover {
-        color: var(--main-color-dark);
-    }
-}
-
-.note-editor__delete:active {
-    color: var(--main-color);
-}
-
-.note-editor__cancel {
-    background: white;
-    font-weight: 700;
-    border: var(--border);
-    color: var(--main-color-darker);
-    font-weight: 700;
-    margin: 0;
-    padding: 8px 16px;
-    outline: none;
-    cursor: pointer;
-}
-
-@media (hover: hover) {
-    .note-editor__cancel:hover {
-        background: var(--main-color-brightest);
-    }
-}
-
 
 .hidden {
     display: none;
