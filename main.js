@@ -3,11 +3,26 @@
 startApp()
 
 function startApp() {
-    var { editorElement, noteContainer, createNoteButton } = findPageElements()
+    var {
+        signupElement,
+        loginElement,
+        accountElement,
+        editorElement,
+        noteContainer,
+        homeButton,
+        createNoteButton,
+        accountButton
+    } = findPageElements()
 
+    var defaultMode = 'signup'
+
+    var signup = Signup(signupElement)
+    var login = Login(loginElement)
+    var account = Account(accountElement)
     var editor = Editor(editorElement)
     var notes = Notes(noteContainer)
-    var mode = Mode({ editor, notes })
+
+    var mode = Mode({ editor, normal: notes, login, signup, account }, defaultMode)
 
     setupActions()
     addPlaceholderNotes()
@@ -23,13 +38,17 @@ function startApp() {
     }
 
     function setupActions() {
-        setupCreateNoteAction()
+        setupTopBarActions()
         setupNoteActions()
         setupEditorActions()
+        setupSignupActions()
+        setupLoginActions()
     }
 
-    function setupCreateNoteAction() {
+    function setupTopBarActions() {
+        homeButton.addEventListener('click', home)
         createNoteButton.addEventListener('click', beginCreateNote)
+        accountButton.addEventListener('click', openAccount)
     }
 
     function setupNoteActions() {
@@ -42,41 +61,85 @@ function startApp() {
         editor.setSubmitHandler(submitNote)
     }
 
+    function setupSignupActions() {
+        signup.setSubmitHandler(submitSignup)
+        signup.setLoginHandler(signupToLogin)
+    }
+
+    function setupLoginActions() {
+        login.setSubmitHandler(submitLogin)
+        login.setSignupHandler(loginToSignup)
+    }
+
     function beginCreateNote() {
-        if (mode.isEditing()) {
+        if (mode.is('editor')) {
             cancelEditing()
         }
         notes.unselect()
         editor.create()
-        mode.edit()
+        mode.switch('editor')
     }
 
     /**
      * @param {number} index
      */
     function editNote(index) {
-        if (mode.isEditing()) return
+        if (mode.is('editor')) return
         notes.select(index)
         editor.edit(notes.getSelected())
-        mode.edit()
+        mode.switch('editor')
     }
 
     function deleteCurrentNote() {
         notes.deleteSelected()
         notes.update()
-        mode.normal()
+        mode.switch('normal')
     }
 
     function cancelEditing() {
         notes.unselect()
-        mode.normal()
+        mode.switch('normal')
     }
 
     function submitNote() {
         notes.deleteSelected()
         notes.add(editor.getContent())
         notes.update()
-        mode.normal()
+        mode.switch('normal')
+    }
+
+    function submitSignup() {
+        console.log(signup.getInput())
+    }
+
+    function signupToLogin() {
+        mode.switch('login')
+    }
+
+    function submitLogin() {
+        console.log("login submitted")
+    }
+
+    function loginToSignup() {
+        mode.switch('signup')
+    }
+
+    function openAccount() {
+        // check if logged in
+        var loggedIn = true
+        if (loggedIn) {
+            mode.switch('account')
+        }
+    }
+
+    function home() {
+        // check if logged in
+        var loggedIn = false
+        if (loggedIn) {
+            mode.switch('normal')
+        } else {
+            mode.switch('signup')
+        }
     }
 }
 
@@ -88,48 +151,195 @@ function findPageElements() {
         throw "Page content container not found"
     }
 
-    var noteContainer = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
-    var editorElement = /** @type {HTMLElement} */ (pageContentContainer.lastElementChild)
+    var signupElement = /** @type {HTMLElement} */ (pageContentContainer.firstElementChild)
+    var loginElement = /** @type {HTMLElement} */ (signupElement.nextElementSibling)
+    var accountElement = /** @type {HTMLElement} */ (loginElement.nextElementSibling)
+    var noteContainer = /** @type {HTMLElement} */ (accountElement.nextElementSibling)
+    var editorElement = /** @type {HTMLElement} */ (noteContainer.nextElementSibling)
 
+    var homeButton = document.getElementById('title')
     var createNoteButton = document.getElementById('new-note')
+    var accountButton = document.getElementById('account')
 
     return {
+        signupElement,
+        loginElement,
+        accountElement,
         noteContainer,
         editorElement,
+        homeButton,
         createNoteButton,
+        accountButton,
     }
 }
 
-function Mode({ editor, notes }) {
-    var mode = undefined
-    var modes = {
-        editing: 'editing',
-        normal: 'normal',
+/**
+ * @param {any} modes
+ * @param {undefined | string} defaultMode
+ */
+
+function Mode(modes, defaultMode = 'normal') {
+    var current = undefined
+
+    function hideCurrent() { modes[current].hide() }
+
+    if (!modes) {
+        throw "No modes provided"
     }
 
-    editor.hide()
-    notes.show()
-    mode = modes.normal
-    var hideCurrent = () => notes.hide()
+    for (let mode in modes) {
+        modes[mode].hide()
+    }
+
+    if (defaultMode && modes[defaultMode]) {
+        current = defaultMode
+        modes[current].show()
+    }
+    return {
+        /**
+         * @param {string} mode
+         */
+        is(mode) {
+            return current == mode
+        },
+
+        /**
+         * @param {string} mode
+         */
+        switch(mode) {
+            if (!mode || !modes[mode]) {
+                throw `Mode "${mode}" not found`
+            }
+            hideCurrent()
+            current = mode
+            modes[current].show()
+        },
+    }
+}
+
+/**
+ * @param {HTMLElement} element
+ */
+function Placeholder(element) {
+    return {
+        hide() {
+
+        },
+
+        show() {
+
+        },
+    }
+}
+
+/**
+ * @param {HTMLElement} element
+ */
+function Signup(element) {
+    var actions = element.lastElementChild
+    var submitButton =
+        /** @type {HTMLElement} */
+        (actions.firstElementChild)
+    var loginButton =
+        /** @type {HTMLElement} */
+        (submitButton.nextElementSibling)
+
+    var loginInput =
+        /** @type {HTMLInputElement} */
+        (element.firstElementChild.nextElementSibling)
+    var passwordInput1 =
+        /** @type {HTMLInputElement} */
+        (loginInput.nextElementSibling)
+    var passwordInput2 =
+        /** @type {HTMLInputElement} */
+        (passwordInput1.nextElementSibling)
+    var masterPasswordInput =
+        /** @type {HTMLInputElement} */
+        (passwordInput2.nextElementSibling)
 
     return {
-        isEditing() {
-            return mode == modes.editing
+        /**
+         * @param {() => void} handler
+         */
+        setSubmitHandler(handler) {
+            submitButton.addEventListener('click', handler)
         },
 
-        edit() {
-            mode = modes.editing
-            hideCurrent()
-            hideCurrent = () => editor.hide()
-            editor.show()
+        /**
+         * @param {() => void} handler
+         */
+        setLoginHandler(handler) {
+            loginButton.addEventListener('click', handler)
         },
 
-        normal() {
-            mode = modes.normal
-            hideCurrent()
-            hideCurrent = () => notes.hide()
-            notes.show()
-        }
+        getInput() {
+            return {
+                login: loginInput.value,
+                password1: passwordInput1.value,
+                password2: passwordInput2.value,
+                master: masterPasswordInput.value
+            }
+        },
+
+        hide() {
+            element.classList.add("hidden")
+        },
+
+        show() {
+            element.classList.remove("hidden")
+        },
+    }
+}
+
+/**
+ * @param {HTMLElement} element
+ */
+function Login(element) {
+    var actions = element.lastElementChild
+    var submitButton =
+        /** @type {HTMLElement} */
+        (actions.firstElementChild)
+    var signupButton =
+        /** @type {HTMLElement} */
+        (submitButton.nextElementSibling)
+
+    return {
+        /**
+         * @param {() => void} handler
+         */
+        setSubmitHandler(handler) {
+            submitButton.addEventListener('click', handler)
+        },
+
+        /**
+         * @param {() => void} handler
+         */
+        setSignupHandler(handler) {
+            signupButton.addEventListener('click', handler)
+        },
+
+        hide() {
+            element.classList.add("hidden")
+        },
+
+        show() {
+            element.classList.remove("hidden")
+        },
+    }
+}
+
+/**
+ * @param {HTMLElement} element
+ */
+function Account(element) {
+    return {
+        hide() {
+            element.classList.add("hidden")
+        },
+
+        show() {
+            element.classList.remove("hidden")
+        },
     }
 }
 

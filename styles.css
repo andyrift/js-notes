@@ -44,6 +44,7 @@ body {
     padding: 8px 12px 8px 16px;
     z-index: 1;
     font-size: 20px;
+    cursor: default;
 }
 
 .top-bar__title-triangle {
@@ -60,6 +61,7 @@ body {
     padding: 0 16px;
     display: flex;
     justify-items: center;
+    gap: 8px;
 }
 
 .button {
@@ -255,6 +257,58 @@ body {
     gap: 8px;
     justify-content: flex-end;
 }
+
+.login {
+    width: 464px;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (max-width: 480px) {
+	.login {
+        width: auto;
+	}
+}
+
+.login__actions {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+.signup {
+    width: 464px;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.signup__actions {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+@media (max-width: 480px) {
+	.signup {
+        width: auto;
+	}
+}
+
+.form__input {
+    border: var(--border);
+    outline: none;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
 
 .hidden {
     display: none;

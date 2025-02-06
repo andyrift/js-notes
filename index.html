@@ -11,16 +11,46 @@
 
 <body>
     <header class="top-bar">
-        <div class="top-bar__title-container">
+        <div id="title" class="top-bar__title-container">
             <h1 class="top-bar__title">Notes</h1>
             <div class="top-bar__title-triangle"></div>
         </div>
         <div class="top-bar__container">
             <button id="new-note" class="button button_border">New</button>
+            <button id="account" class="button button_border">Account</button>
         </div>
     </header>
     <div class="page-content">
-        <div class="note-container">
+        <div class="signup hidden">
+            <h1>
+                Sign up
+            </h1>
+            <input type="text" placeholder="login" class="form__input">
+            <input type="password" placeholder="password" class="form__input">
+            <input type="password" placeholder="repeat password" class="form__input">
+            <input type="password" placeholder="master password" class="form__input">
+            <div class="signup__actions">
+                <button class="button button_full">Submit</button>
+                <button class="button button_border">Log in</button>
+            </div>
+        </div>
+        <div class="login hidden">
+            <h1>
+                Log in
+            </h1>
+            <input type="text" placeholder="login" class="form__input">
+            <input type="password" placeholder="password" class="form__input">
+            <div class="login__actions">
+                <button class="button button_full">Submit</button>
+                <button class="button button_border">Sign Up</button>
+            </div>
+        </div>
+        <div class="account hidden">
+            <h1>
+                Account
+            </h1>
+        </div>
+        <div class="note-container hidden">
             <!-- Note Card Example
             <div class="note-card">
                 <div class="note-card__content">
