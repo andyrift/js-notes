@@ -4,6 +4,7 @@ startApp()
 
 function startApp() {
     var {
+        loadingElement,
         signupElement,
         loginElement,
         accountElement,
@@ -11,18 +12,37 @@ function startApp() {
         noteContainer,
         homeButton,
         createNoteButton,
-        accountButton
+        accountButton,
+        loginButton,
     } = findPageElements()
 
-    var defaultMode = 'signup'
+    // check if logged in
 
+    var state = {
+        loggedIn: false,
+        pendingRequest: false,
+    }
+
+    var defaultMode = 'login'
+
+
+    if (state.loggedIn) {
+        defaultMode = 'normal'
+
+        loginButton.classList.add('hidden')
+    } else {
+        createNoteButton.classList.add('hidden')
+        accountButton.classList.add('hidden')
+    }
+
+    var loading = View(signupElement)
     var signup = Signup(signupElement)
     var login = Login(loginElement)
     var account = Account(accountElement)
     var editor = Editor(editorElement)
     var notes = Notes(noteContainer)
 
-    var mode = Mode({ editor, normal: notes, login, signup, account }, defaultMode)
+    var mode = Mode({ loading, editor, normal: notes, login, signup, account }, defaultMode)
 
     setupActions()
     addPlaceholderNotes()
@@ -43,12 +63,14 @@ function startApp() {
         setupEditorActions()
         setupSignupActions()
         setupLoginActions()
+        setupAccountActions()
     }
 
     function setupTopBarActions() {
         homeButton.addEventListener('click', home)
         createNoteButton.addEventListener('click', beginCreateNote)
         accountButton.addEventListener('click', openAccount)
+        loginButton.addEventListener('click', openLogin)
     }
 
     function setupNoteActions() {
@@ -69,6 +91,10 @@ function startApp() {
     function setupLoginActions() {
         login.setSubmitHandler(submitLogin)
         login.setSignupHandler(loginToSignup)
+    }
+
+    function setupAccountActions() {
+        account.setLogoutHandler(logout)
     }
 
     function beginCreateNote() {
@@ -110,6 +136,8 @@ function startApp() {
 
     function submitSignup() {
         console.log(signup.getInput())
+        switchToLoggedIn()
+        mode.switch('normal')
     }
 
     function signupToLogin() {
@@ -118,6 +146,8 @@ function startApp() {
 
     function submitLogin() {
         console.log("login submitted")
+        switchToLoggedIn()
+        mode.switch('normal')
     }
 
     function loginToSignup() {
@@ -125,21 +155,44 @@ function startApp() {
     }
 
     function openAccount() {
-        // check if logged in
-        var loggedIn = true
-        if (loggedIn) {
+        if (state.loggedIn) {
             mode.switch('account')
         }
     }
 
+    function logout() {
+        if (state.loggedIn) {
+            switchToLoggedOut()
+            mode.switch('login')
+        }
+    }
+
+    function openLogin() {
+        if (!state.loggedIn) {
+            mode.switch('login')
+        }
+    }
+
     function home() {
-        // check if logged in
-        var loggedIn = false
-        if (loggedIn) {
+        if (state.loggedIn) {
             mode.switch('normal')
         } else {
-            mode.switch('signup')
+            mode.switch('login')
         }
+    }
+
+    function switchToLoggedIn() {
+        state.loggedIn = true
+        loginButton.classList.add('hidden')
+        createNoteButton.classList.remove('hidden')
+        accountButton.classList.remove('hidden')
+    }
+
+    function switchToLoggedOut() {
+        state.loggedIn = false
+        loginButton.classList.remove('hidden')
+        createNoteButton.classList.add('hidden')
+        accountButton.classList.add('hidden')
     }
 }
 
@@ -147,17 +200,20 @@ function findPageElements() {
     var pageContentContainer = findHTMLElementByClassName(document, 'page-content')
     var topBar = findHTMLElementByClassName(document, 'top-bar')
 
-    var signupElement = findHTMLElementByClassName(pageContentContainer, 'signup')
-    var loginElement = findHTMLElementByClassName(pageContentContainer, 'login')
-    var accountElement = findHTMLElementByClassName(pageContentContainer, 'account')
-    var noteContainer = findHTMLElementByClassName(pageContentContainer, 'note-container')
-    var editorElement = findHTMLElementByClassName(pageContentContainer, 'note-editor')
+    var loadingElement = findHTMLElementByClassName(pageContentContainer, 'view_loading')
+    var signupElement = findHTMLElementByClassName(pageContentContainer, 'view_signup')
+    var loginElement = findHTMLElementByClassName(pageContentContainer, 'view_login')
+    var accountElement = findHTMLElementByClassName(pageContentContainer, 'view_account')
+    var noteContainer = findHTMLElementByClassName(pageContentContainer, 'view_note-container')
+    var editorElement = findHTMLElementByClassName(pageContentContainer, 'view_note-editor')
 
     var homeButton = findHTMLElementByClassName(topBar, 'top-bar__title')
     var createNoteButton = findHTMLElementByClassName(topBar, 'button_new-note')
     var accountButton = findHTMLElementByClassName(topBar, 'button_account')
+    var loginButton = findHTMLElementByClassName(topBar, 'button_login')
 
     return {
+        loadingElement,
         signupElement,
         loginElement,
         accountElement,
@@ -166,6 +222,7 @@ function findPageElements() {
         homeButton,
         createNoteButton,
         accountButton,
+        loginButton,
     }
 }
 
@@ -231,9 +288,24 @@ function Placeholder(element) {
 /**
  * @param {HTMLElement} element
  */
+function View(element) {
+    return {
+        hide() {
+            element.classList.add("hidden")
+        },
+
+        show() {
+            element.classList.remove("hidden")
+        },
+    }
+}
+
+/**
+ * @param {HTMLElement} element
+ */
 function Signup(element) {
     var submitButton = findHTMLElementByClassName(element, 'button_submit')
-    var loginButton = findHTMLElementByClassName(element, 'button_login')
+    var loginButton = findHTMLElementByClassName(element, 'link_login')
 
     var loginInput =
         /** @type {HTMLInputElement} */
@@ -287,7 +359,7 @@ function Signup(element) {
  */
 function Login(element) {
     var submitButton = findHTMLElementByClassName(element, 'button_submit')
-    var signupButton = findHTMLElementByClassName(element, 'button_signup')
+    var signupButton = findHTMLElementByClassName(element, 'link_signup')
 
     return {
         /**
@@ -318,7 +390,16 @@ function Login(element) {
  * @param {HTMLElement} element
  */
 function Account(element) {
+    var logoutButton = findHTMLElementByClassName(element, 'button_logout')
+
     return {
+        /**
+         * @param {() => void} handler
+         */
+        setLogoutHandler(handler) {
+            logoutButton.addEventListener('click', handler)
+        },
+
         hide() {
             element.classList.add("hidden")
         },
