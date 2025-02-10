@@ -136,9 +136,12 @@ function startApp() {
         console.log(signup.getInput())
         switchToLoggedIn()
         mode.switch('normal')
+        signup.clear()
     }
 
     function signupToLogin() {
+        signup.clear()
+        login.clear()
         mode.switch('login')
     }
 
@@ -146,9 +149,12 @@ function startApp() {
         console.log(login.getInput())
         switchToLoggedIn()
         mode.switch('normal')
+        login.clear()
     }
 
     function loginToSignup() {
+        signup.clear()
+        login.clear()
         mode.switch('signup')
     }
 
@@ -161,12 +167,14 @@ function startApp() {
     function logout() {
         if (state.loggedIn) {
             switchToLoggedOut()
+            login.clear()
             mode.switch('login')
         }
     }
 
     function openLogin() {
         if (!state.loggedIn) {
+            login.clear()
             mode.switch('login')
         }
     }
@@ -336,6 +344,13 @@ function Signup(element) {
             }
         },
 
+        clear() {
+            usernameInput.value = ""
+            passwordInput.value = ""
+            passwordRepeatedInput.value = ""
+            masterPasswordInput.value = ""
+        },
+
         hide() {
             element.classList.add("hidden")
         },
@@ -378,6 +393,11 @@ function Login(element) {
                 username: usernameInput.value,
                 password: passwordInput.value,
             }
+        },
+
+        clear() {
+            usernameInput.value = ""
+            passwordInput.value = ""
         },
 
         hide() {
