@@ -143,7 +143,7 @@ function startApp() {
     }
 
     function submitLogin() {
-        console.log("login submitted")
+        console.log(login.getInput())
         switchToLoggedIn()
         mode.switch('normal')
     }
@@ -305,7 +305,12 @@ function Signup(element) {
     var submitButton = findHTMLElementByClassName(element, 'button_submit')
     var loginButton = findHTMLElementByClassName(element, 'link_login')
 
-    var form = findHTMLElementByClassName(element, 'form')
+    var form = document.forms['signup-form']
+
+    var usernameInput = form['username']
+    var passwordInput = form['password']
+    var passwordRepeatedInput = form['password-repeated']
+    var masterPasswordInput = form['master-password']
 
     return {
         /**
@@ -323,7 +328,12 @@ function Signup(element) {
         },
 
         getInput() {
-            return { }
+            return {
+                username: usernameInput.value,
+                password: passwordInput.value,
+                passwordRepeated: passwordRepeatedInput.value,
+                masterPassword: masterPasswordInput.value,
+            }
         },
 
         hide() {
@@ -343,6 +353,11 @@ function Login(element) {
     var submitButton = findHTMLElementByClassName(element, 'button_submit')
     var signupButton = findHTMLElementByClassName(element, 'link_signup')
 
+    var form = document.forms['login-form']
+
+    var usernameInput = form['username']
+    var passwordInput = form['password']
+
     return {
         /**
          * @param {() => void} handler
@@ -356,6 +371,13 @@ function Login(element) {
          */
         setSignupHandler(handler) {
             signupButton.addEventListener('click', handler)
+        },
+
+        getInput() {
+            return {
+                username: usernameInput.value,
+                password: passwordInput.value,
+            }
         },
 
         hide() {
