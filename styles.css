@@ -163,12 +163,17 @@ body {
 }
 
 @media (max-width: 1024px) {
-	.page-content {
+    .page-content {
         width: auto;
-	}
+    }
 }
 
-/*.view { }*/
+.view {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 
 .view__title {
     margin: 0px;
@@ -185,9 +190,20 @@ body {
 }
 
 @media (max-width: 360) {
-	.view_form {
+    .view_form {
         width: auto;
-	}
+    }
+}
+
+.view_small {
+    width: 464px;
+    margin: auto;
+}
+
+@media (max-width: 480px) {
+    .view_small {
+        width: auto;
+    }
 }
 
 .view__actions {
@@ -235,27 +251,33 @@ body {
 }
 
 @media (max-width: 1024px) {
-	.view_note-container {
+    .view_note-container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
+    }
 }
 
 @media (max-width: 786px) {
-	.view_note-container {
+    .view_note-container {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+    }
 }
 
 @media (max-width: 480px) {
-	.view_note-container {
+    .view_note-container {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
+    }
 }
 
 @media (max-width: 360px) {
-	.view_note-container {
+    .view_note-container {
         grid-template-columns: repeat(1, minmax(0, 1fr));
-	}
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .note-card {
@@ -312,9 +334,9 @@ body {
 }
 
 @media (max-width: 480px) {
-	.note-editor {
+    .note-editor {
         width: auto;
-	}
+    }
 }
 
 .note-editor__title {
