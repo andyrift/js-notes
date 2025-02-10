@@ -166,10 +166,16 @@ function startApp() {
 
     function logout() {
         if (state.loggedIn) {
-            switchToLoggedOut()
-            login.clear()
-            mode.switch('login')
+            logoutUnchecked()
         }
+    }
+
+    function logoutUnchecked() {
+        switchToLoggedOut()
+        login.clear()
+        notes.clear()
+        account.clear()
+        mode.switch('login')
     }
 
     function openLogin() {
@@ -424,6 +430,10 @@ function Account(element) {
             logoutButton.addEventListener('click', handler)
         },
 
+        clear() {
+            // TODO
+        },
+
         hide() {
             element.classList.add("hidden")
         },
@@ -596,6 +606,11 @@ function Notes(noteContainer) {
                 notes.splice(selected, 1)
                 this.unselect()
             }
+        },
+
+        clear() {
+            notes = []
+            this.update()
         },
 
         hide() {
