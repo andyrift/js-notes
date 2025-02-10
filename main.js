@@ -25,10 +25,8 @@ function startApp() {
 
     var defaultMode = 'login'
 
-
     if (state.loggedIn) {
         defaultMode = 'normal'
-
         loginButton.classList.add('hidden')
     } else {
         createNoteButton.classList.add('hidden')
@@ -307,18 +305,7 @@ function Signup(element) {
     var submitButton = findHTMLElementByClassName(element, 'button_submit')
     var loginButton = findHTMLElementByClassName(element, 'link_login')
 
-    var loginInput =
-        /** @type {HTMLInputElement} */
-        (element.firstElementChild.nextElementSibling)
-    var passwordInput1 =
-        /** @type {HTMLInputElement} */
-        (loginInput.nextElementSibling)
-    var passwordInput2 =
-        /** @type {HTMLInputElement} */
-        (passwordInput1.nextElementSibling)
-    var masterPasswordInput =
-        /** @type {HTMLInputElement} */
-        (passwordInput2.nextElementSibling)
+    var form = findHTMLElementByClassName(element, 'form')
 
     return {
         /**
@@ -336,12 +323,7 @@ function Signup(element) {
         },
 
         getInput() {
-            return {
-                login: loginInput.value,
-                password1: passwordInput1.value,
-                password2: passwordInput2.value,
-                master: masterPasswordInput.value
-            }
+            return { }
         },
 
         hide() {
