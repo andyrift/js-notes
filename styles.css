@@ -46,7 +46,7 @@ body {
     color: var(--title-text-color);
     margin: 0;
     padding: 8px 12px 8px 16px;
-    z-index: 1;
+    z-index: 2;
     font-size: 20px;
     cursor: default;
     user-select: none;
@@ -58,6 +58,18 @@ body {
     padding: 25%;
     transform: skewX(-45deg);
     margin-left: -25%;
+    z-index: 1;
+}
+
+.top-bar__title-triangle-shadow {
+    background-image: linear-gradient(to right,
+            hsl(0, 0%, 0%, 100%),
+            hsl(0, 0%, 0%, 100%),
+            hsl(0, 0%, 0%, 0%));
+    aspect-ratio: 1 / 1;
+    padding: 25%;
+    transform: skewX(-45deg);
+    margin-left: calc(5px - 50%);
     z-index: 0;
 }
 
