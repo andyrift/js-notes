@@ -33,7 +33,7 @@ function startApp() {
         accountButton.classList.add('hidden')
     }
 
-    var loading = View(signupElement)
+    var loading = View(loadingElement)
     var signup = Signup(signupElement)
     var login = Login(loginElement)
     var account = Account(accountElement)
