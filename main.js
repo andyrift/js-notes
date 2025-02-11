@@ -253,7 +253,7 @@ function findPageElements() {
 }
 
 /**
- * @param {any} modes
+ * @param {object} modes
  * @param {undefined | string} defaultMode
  */
 
@@ -574,7 +574,7 @@ function Editor(element) {
         },
 
         /**
-         * @param {{title: String, body: String}} note
+         * @param {{title: string, body: string}} note
          */
         setContent(note) {
             titleField.value = note.title
@@ -606,7 +606,7 @@ function Editor(element) {
         },
 
         /**
-         * @param {{title: String, body: String}} note
+         * @param {{title: string, body: string}} note
          */
         edit(note) {
             this.setContent(note)
@@ -704,7 +704,7 @@ function Notes(noteContainer) {
 
 /**
  * @param {HTMLElement} noteContainer
- * @param {Object[]} notes
+ * @param {object[]} notes
 */
 function updateNotes(noteContainer, notes) {
     var noteCards = createNoteCards(notes)
@@ -713,7 +713,7 @@ function updateNotes(noteContainer, notes) {
 }
 
 /**
- * @param {Object[]} notes
+ * @param {object[]} notes
  * @returns {HTMLElement[]}
 */
 function createNoteCards(notes) {
@@ -812,4 +812,10 @@ function findHTMLElementByClassName(element, className) {
         throw `HTML element with class name ${className} not found`
     }
     return child
+}
+
+async function wait() {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, 1000)
+    })
 }
