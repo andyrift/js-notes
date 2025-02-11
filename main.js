@@ -379,10 +379,12 @@ function Signup(element) {
 
     var form = document.forms['signup-form']
 
-    var usernameInput = form['username']
-    var passwordInput = form['password']
-    var passwordRepeatedInput = form['password-repeated']
-    var masterPasswordInput = form['master-password']
+    var inputs = {
+        username: form['username'],
+        password: form['password'],
+        passwordRepeated: form['password-repeated'],
+        masterPassword: form['master-password'],
+    }
 
     return {
         /**
@@ -401,18 +403,18 @@ function Signup(element) {
 
         getInput() {
             return {
-                username: usernameInput.value,
-                password: passwordInput.value,
-                passwordRepeated: passwordRepeatedInput.value,
-                masterPassword: masterPasswordInput.value,
+                username: inputs.username.value,
+                password: inputs.password.value,
+                passwordRepeated: inputs.passwordRepeated.value,
+                masterPassword: inputs.masterPassword.value,
             }
         },
 
         clear() {
-            usernameInput.value = ""
-            passwordInput.value = ""
-            passwordRepeatedInput.value = ""
-            masterPasswordInput.value = ""
+            inputs.username.value = ""
+            inputs.password.value = ""
+            inputs.passwordRepeated.value = ""
+            inputs.masterPassword.value = ""
         },
 
         hide() {
@@ -434,8 +436,10 @@ function Login(element) {
 
     var form = document.forms['login-form']
 
-    var usernameInput = form['username']
-    var passwordInput = form['password']
+    var inputs = {
+        username: form['username'],
+        password: form['password'],
+    }
 
     return {
         /**
@@ -454,14 +458,14 @@ function Login(element) {
 
         getInput() {
             return {
-                username: usernameInput.value,
-                password: passwordInput.value,
+                username: inputs.username.value,
+                password: inputs.password.value,
             }
         },
 
         clear() {
-            usernameInput.value = ""
-            passwordInput.value = ""
+            inputs.username.value = ""
+            inputs.password.value = ""
         },
 
         hide() {
