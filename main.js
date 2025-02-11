@@ -480,6 +480,12 @@ function Login(element) {
 function Account(element) {
     var logoutButton = findHTMLElementByClassName(element, 'button_logout')
 
+    var fields = {
+        uuid: findHTMLElementByClassName(element, 'field_uuid'),
+        username: findHTMLElementByClassName(element, 'field_username'),
+        registered: findHTMLElementByClassName(element, 'field_registered'),
+    }
+
     return {
         /**
          * @param {() => void} handler
@@ -488,8 +494,19 @@ function Account(element) {
             logoutButton.addEventListener('click', handler)
         },
 
+        /**
+        * @param {object} info
+        */
+        setInfo(info) {
+            fields.uuid.innerText = info.uuid
+            fields.username.innerText = info.username
+            fields.registered.innerText = info.registered
+        },
+
         clear() {
-            // TODO
+            fields.uuid.innerText = ""
+            fields.username.innerText = ""
+            fields.registered.innerText = ""
         },
 
         hide() {
