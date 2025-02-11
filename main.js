@@ -42,18 +42,112 @@ function startApp() {
 
     var mode = Mode({ loading, editor, normal: notes, login, signup, account }, defaultMode)
 
+    var actions = Actions()
+
+    actions.addGroups({
+        notes: {
+            /**
+             * @param {number} index
+             */
+            editNote(index) {
+                if (mode.is('editor')) return
+                notes.select(index)
+                editor.edit(notes.getSelected())
+                mode.switch('editor')
+            },
+
+            deleteCurrentNote() {
+                notes.deleteSelected()
+                notes.update()
+                mode.switch('normal')
+            },
+
+            cancelEditing() {
+                notes.unselect()
+                mode.switch('normal')
+            },
+
+            submitNote() {
+                notes.deleteSelected()
+                notes.add(editor.getContent())
+                notes.update()
+                mode.switch('normal')
+            }
+        },
+
+        signup: {
+            submitSignup() {
+                console.log(signup.getInput())
+                switchToLoggedIn()
+                mode.switch('normal')
+                signup.clear()
+            },
+
+            signupToLogin() {
+                signup.clear()
+                login.clear()
+                mode.switch('login')
+            }
+        },
+
+        login: {
+            submitLogin() {
+                console.log(login.getInput())
+                switchToLoggedIn()
+                mode.switch('normal')
+                login.clear()
+            },
+
+            loginToSignup() {
+                signup.clear()
+                login.clear()
+                mode.switch('signup')
+            }
+        },
+
+        account: {
+            logout() {
+                if (state.loggedIn) {
+                    logoutUnchecked()
+                }
+            }
+        },
+
+        general: {
+            beginCreateNote() {
+                if (mode.is('editor')) {
+                    actions["notes"].cancelEditing()
+                }
+                notes.unselect()
+                editor.create()
+                mode.switch('editor')
+            },
+
+            openAccount() {
+                if (state.loggedIn) {
+                    mode.switch('account')
+                }
+            },
+
+            openLogin() {
+                if (!state.loggedIn) {
+                    login.clear()
+                    mode.switch('login')
+                }
+            },
+
+            home() {
+                if (state.loggedIn) {
+                    mode.switch('normal')
+                } else {
+                    mode.switch('login')
+                }
+            }
+        }
+    })
+
     setupActions()
     addPlaceholderNotes()
-
-    function addPlaceholderNotes() {
-        for (let i = 1; i <= 5; i += 1) {
-            notes.add({
-                title: `Note ${i}`,
-                body: `Note ${i} body`,
-            })
-        }
-        notes.update()
-    }
 
     function setupActions() {
         setupTopBarActions()
@@ -65,109 +159,34 @@ function startApp() {
     }
 
     function setupTopBarActions() {
-        homeButton.addEventListener('click', home)
-        createNoteButton.addEventListener('click', beginCreateNote)
-        accountButton.addEventListener('click', openAccount)
-        loginButton.addEventListener('click', openLogin)
+        homeButton.addEventListener('click', actions["general"].home)
+        createNoteButton.addEventListener('click', actions["general"].beginCreateNote)
+        accountButton.addEventListener('click', actions["general"].openAccount)
+        loginButton.addEventListener('click', actions["general"].openLogin)
     }
 
     function setupNoteActions() {
-        notes.setEditHandler(editNote)
+        notes.setEditHandler(actions["notes"].editNote)
     }
 
     function setupEditorActions() {
-        editor.setDeleteHandler(deleteCurrentNote)
-        editor.setCancelHandler(cancelEditing)
-        editor.setSubmitHandler(submitNote)
+        editor.setDeleteHandler(actions["notes"].deleteCurrentNote)
+        editor.setCancelHandler(actions["notes"].cancelEditing)
+        editor.setSubmitHandler(actions["notes"].submitNote)
     }
 
     function setupSignupActions() {
-        signup.setSubmitHandler(submitSignup)
-        signup.setLoginHandler(signupToLogin)
+        signup.setSubmitHandler(actions["signup"].submitSignup)
+        signup.setLoginHandler(actions["signup"].signupToLogin)
     }
 
     function setupLoginActions() {
-        login.setSubmitHandler(submitLogin)
-        login.setSignupHandler(loginToSignup)
+        login.setSubmitHandler(actions["login"].submitLogin)
+        login.setSignupHandler(actions["login"].loginToSignup)
     }
 
     function setupAccountActions() {
-        account.setLogoutHandler(logout)
-    }
-
-    function beginCreateNote() {
-        if (mode.is('editor')) {
-            cancelEditing()
-        }
-        notes.unselect()
-        editor.create()
-        mode.switch('editor')
-    }
-
-    /**
-     * @param {number} index
-     */
-    function editNote(index) {
-        if (mode.is('editor')) return
-        notes.select(index)
-        editor.edit(notes.getSelected())
-        mode.switch('editor')
-    }
-
-    function deleteCurrentNote() {
-        notes.deleteSelected()
-        notes.update()
-        mode.switch('normal')
-    }
-
-    function cancelEditing() {
-        notes.unselect()
-        mode.switch('normal')
-    }
-
-    function submitNote() {
-        notes.deleteSelected()
-        notes.add(editor.getContent())
-        notes.update()
-        mode.switch('normal')
-    }
-
-    function submitSignup() {
-        console.log(signup.getInput())
-        switchToLoggedIn()
-        mode.switch('normal')
-        signup.clear()
-    }
-
-    function signupToLogin() {
-        signup.clear()
-        login.clear()
-        mode.switch('login')
-    }
-
-    function submitLogin() {
-        console.log(login.getInput())
-        switchToLoggedIn()
-        mode.switch('normal')
-        login.clear()
-    }
-
-    function loginToSignup() {
-        signup.clear()
-        login.clear()
-        mode.switch('signup')
-    }
-
-    function openAccount() {
-        if (state.loggedIn) {
-            mode.switch('account')
-        }
-    }
-
-    function logout() {
-        if (state.loggedIn) {
-            logoutUnchecked()
-        }
+        account.setLogoutHandler(actions["account"].logout)
     }
 
     function logoutUnchecked() {
@@ -176,21 +195,6 @@ function startApp() {
         notes.clear()
         account.clear()
         mode.switch('login')
-    }
-
-    function openLogin() {
-        if (!state.loggedIn) {
-            login.clear()
-            mode.switch('login')
-        }
-    }
-
-    function home() {
-        if (state.loggedIn) {
-            mode.switch('normal')
-        } else {
-            mode.switch('login')
-        }
     }
 
     function switchToLoggedIn() {
@@ -205,6 +209,16 @@ function startApp() {
         loginButton.classList.remove('hidden')
         createNoteButton.classList.add('hidden')
         accountButton.classList.add('hidden')
+    }
+
+    function addPlaceholderNotes() {
+        for (let i = 1; i <= 5; i += 1) {
+            notes.add({
+                title: `Note ${i}`,
+                body: `Note ${i} body`,
+            })
+        }
+        notes.update()
     }
 }
 
@@ -280,6 +294,50 @@ function Mode(modes, defaultMode = 'normal') {
             modes[current].show()
         },
     }
+}
+
+function Actions() {
+    var centralizedActions = {
+        /**
+        * @param {object} groups
+        */
+        addGroups(groups) {
+            for (let groupName in groups) {
+                this.addGroup(groupName, groups[groupName])
+            }
+        },
+
+        /**
+        * @param {string} groupName
+        * @param {object} actions
+        */
+        addGroup(groupName, actions) {
+            var group = {}
+            for (let name in actions) {
+                group[name] = actionify(actions[name])
+            }
+            centralizedActions[groupName] = group
+        }
+    }
+
+    var pending = false
+
+    /**
+    * @param {(...args: any[]) => Promise<void>} action
+    * @returns {(...args: any[]) => Promise<void>}
+    */
+    function actionify(action) {
+        return async function (...args) {
+            if (pending) {
+                return
+            }
+            pending = true
+            await action(...args)
+            pending = false
+        }
+    }
+
+    return centralizedActions
 }
 
 /**
