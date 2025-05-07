@@ -819,3 +819,18 @@ async function wait() {
         setTimeout(resolve, 1000)
     })
 }
+
+//changeHue()
+function changeHue() {
+    document.getElementsByClassName("hue-range")[0].addEventListener("input", (e) => {
+        document.documentElement.style.setProperty("--main-hue", e.target.value)
+    })
+    var hue = 0
+    setInterval(() => {
+        hue += 1
+        if (hue >= 360) {
+            hue -= 360
+        }
+        document.documentElement.style.setProperty("--main-hue", hue.toString())
+    }, 100)
+}

@@ -1,24 +1,28 @@
 :root {
-    --main-color: hsl(165, 80%, 80%);
-    --main-color-darker: hsl(165, 40%, 40%);
-    --main-color-dark: hsl(165, 40%, 50%);
-    --main-color-brighter: hsl(165, 90%, 90%);
-    --main-color-brightest: hsl(165, 40%, 95%);
+    --main-hue: 220;
+    --main-color-1: hsl(var(--main-hue), 30%, 95%);
+    --main-color-2: hsl(var(--main-hue), 90%, 90%);
+    --main-color-3: hsl(var(--main-hue), 80%, 83%);
+    --main-color-4: hsl(var(--main-hue), 60%, 70%);
+    --main-color-5: hsl(var(--main-hue), 40%, 55%);
+    --main-color-6: hsl(var(--main-hue), 40%, 40%);
+    --main-color-7: hsl(var(--main-hue), 40%, 20%);
+    --main-color-8: hsl(var(--main-hue), 10%, 15%);
 
-    --title-text-color: hsl(165, 40%, 20%);
-    --text-color: hsl(165, 10%, 15%);
+    --title-text-color: var(--main-color-6);
+    --text-color: var(--main-color-8);
 
     --shadow: 0 2px 4px hsl(0, 0%, 0%, 30%);
     --shadow-s: 0 1px 3px hsl(0, 0%, 0%, 30%);
 
-    --border: solid 2px var(--main-color-darker);
+    --border: solid 2px var(--main-color-5);
     --top-space: 41.5px;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background: hsl(165, 10%, 93%);
+    background: var(--main-color-1);
     font-family: "Quicksand", serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -38,11 +42,10 @@ body {
 
 .top-bar__title-container {
     display: flex;
-    height: 100%;
 }
 
 .top-bar__title {
-    background: var(--main-color);
+    background: var(--main-color-3);
     color: var(--title-text-color);
     margin: 0;
     padding: 8px 12px 8px 16px;
@@ -53,7 +56,7 @@ body {
 }
 
 .top-bar__title-triangle {
-    background: var(--main-color);
+    background: var(--main-color-3);
     aspect-ratio: 1 / 1;
     padding: 25%;
     transform: skewX(-45deg);
@@ -92,21 +95,21 @@ body {
 .button_border {
     background: white;
     border: var(--border);
-    color: var(--main-color-darker);
+    color: var(--main-color-5);
 }
 
 @media (hover: hover) {
     .button_border:hover {
-        background: var(--main-color-brightest);
+        background: var(--main-color-1);
     }
 }
 
 .button_border:active {
-    background: var(--main-color-brighter);
+    background: var(--main-color-2);
 }
 
 .button_full {
-    background: var(--main-color-darker);
+    background: var(--main-color-5);
     border: none;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -115,28 +118,28 @@ body {
 
 @media (hover: hover) {
     .button_full:hover {
-        background: var(--main-color-dark);
+        background: var(--main-color-4);
     }
 }
 
 .button_full:active {
-    background: var(--main-color);
+    background: var(--main-color-3);
 }
 
 .button_text {
     background: transparent;
     border: none;
-    color: var(--main-color-darker);
+    color: var(--main-color-5);
 }
 
 @media (hover: hover) {
     .button_text:hover {
-        color: var(--main-color-dark);
+        color: var(--main-color-4);
     }
 }
 
 .button_text:active {
-    color: var(--main-color);
+    color: var(--main-color-3);
 }
 
 .button_margin_left {
@@ -152,7 +155,7 @@ body {
 }
 
 .link {
-    color: var(--main-color-darker);
+    color: var(--main-color-6);
     cursor: pointer;
 }
 
@@ -163,7 +166,7 @@ body {
 }
 
 .link:active {
-    color: var(--main-color-dark);
+    color: var(--main-color-4);
 }
 
 .page-content {
@@ -254,7 +257,7 @@ body {
     font-weight: 600;
     margin: 0px;
     margin-top: 8px;
-    color: var(--main-color-darker);
+    color: var(--main-color-6);
 }
 
 .view_note-container {
@@ -308,8 +311,8 @@ body {
 }
 
 .note-card__title {
-    background: var(--main-color);
-    border-top: solid 2px var(--main-color-brighter);
+    background: var(--main-color-3);
+    border-top: solid 2px var(--main-color-2);
     box-shadow: var(--shadow);
     color: var(--title-text-color);
     font-size: 20px;
@@ -381,4 +384,13 @@ body {
 
 .hidden {
     display: none;
+}
+
+.palette {
+    display: flex;
+}
+
+.palette__color {
+    width: 50px;
+    height: 50px;
 }
